@@ -13,8 +13,6 @@ import time
 import random
 #Self-explanatory.
 import math
-#Me when I don't want to build the game data into the program: I turned my data into a pickle. So bloody funny. Also I have to write the code as code then I can reverse the process.
-import pickle
 #Also self-explanatory.
 from fuzzywuzzy import fuzz, process
 #Also also self-explanatory.
@@ -22,7 +20,12 @@ from termcolor import colored, cprint
 
 wrapper = textwrap.TextWrapper(width=50)
 screen_width = 100
-
+#Helper function so that I don't need to keep typing the try except.
+def clear():
+	try:
+		os.system("cls")
+	except:
+		os.system("clear")
 #Player Class
 class Player:
 	def __init__(self,name,maxHp,hp,maxMp,mp,stat_effects,strength,defense,agility,intelligence,charisma,luck,location):
@@ -52,9 +55,14 @@ class Player:
 		# Hope you've got word wrap on for this one. Also ignore my inconsistent hash count in comments. It just seems right as I make them.
 		if self.stat_effects == []:
 			return wrapper.fill(self.name + " has " + self.tcHealth + self.tcMagic + "no status effects, " + self.tcStrength + self.tcDefense + self.tcAgility + self.tcIntelligence + self.tcCharisma + "and " + self.tcLuck + ".")
-	def whereami(self,location):
-		retVal = location.internalName + " is the internal name, and " + location.title + " is the title."
+	def whereami(self):
+		retVal = self.location.internalName + " is the internal name, and " + self.location.title + " is the title."
 		return retVal
+
+#Inventory
+class Inventory:
+	def __init__(self,contents):
+		self.contents = {}
 #### Class for the various areas of the world. ####
 """
 TODO: Navigation, Shops, and battles, IN THAT ORDER!
@@ -62,98 +70,205 @@ Children of the Room Class will vary from high encounters and low shops to low e
 Chests and whatnot will be children of the Event Class.
 Battles will be a seperate class, but the specifics will be attributes of areas.
 """
+class Shop:
+	def __init__(self,shopkeepText,items,prices,buyType):
+		self.shopkeepText = ["Welcome to my shop! Buy or sell?","What would you like to buy?","What would you like to sell?"]
+		self.items = []
+		self.prices = []
+		self.buyType = "all"
+	def buysellChoice(self):
+		cprint(self.shopkeepText[0], "cyan", attrs=['underline'])
+		option = input("> ")
+		if option.lower() == "buy":
+			self.buyMenu()
+		elif option.lower() == "sell":
+			self.sellMenu()
+		elif option.lower() == "exit":
+			return
+		while option.lower() not in ["buy","sell","exit"]:
+			cprint("Come again?", "cyan", attrs=['underline'])
+			option = input("> ")
+			if option.lower() == "buy":
+				self.buyMenu()
+			elif option.lower() == "sell":
+				self.sellMenu()
+			elif option.lower() == "exit":
+				return
+	def buyMenu(self):
+		cprint(self.shopkeepText[1], "cyan", attrs=['underline'])
+		pass
+	def sellMenu(self):
+		cprint(self.shopkeepText[2], "cyan", attrs=['underline'])
+		pass
 class Room:
-	def __init__(self,internalName,title,description,exits,encountersEnabled,encounterPool):
+	def __init__(self,internalName,title,description,exits,encountersEnabled,encounterPool,shops):
 		self.internalName = internalName
 		self.title = title
 		self.description = description
 		self.exits = exits
 		self.encountersEnabled = encountersEnabled
 		self.encounterPool = encounterPool
+		self.shops = shops
+	def describe(self):
+		exitList = ''
+		for i in self.exits:
+			exitList += i
+		retVal = self.description + " The exits are as follows: " + exitList + ". What do you do?"
+		return retVal
 #### Children of Room Class inbound! ####
 ## A room in a city ##
 class CityCell(Room):
-	def __init__(self,internalName,title,description,exits,encountersEnabled,encounterPool):
+	def __init__(self,internalName,title,description,exits,encountersEnabled,encounterPool,shops):
 		self.internalName = internalName
 		self.title = title
 		self.description = description
 		self.exits = exits
 		self.encountersEnabled = False
 		self.encounterPool = None
+		self.shops = shops
+	def describe(self):
+		exitList = ''
+		for i in self.exits:
+			exitList += i
+		retVal = self.description + " The exits are as follows: " + exitList + ". What do you do?"
+		return retVal
 ### Generic outdoor parent class. ###
 class Outdoors(Room):
-	def __init__(self,internalName,title,description,exits,encountersEnabled,encounterPool):
+	def __init__(self,internalName,title,description,exits,encountersEnabled,encounterPool,shops):
 		self.internalName = internalName
 		self.title = title
 		self.description = description
 		self.exits = exits
 		self.encountersEnabled = True
 		self.encounterPool = encounterPool
+		self.shops = shops
+	def describe(self):
+		exitList = ''
+		for i in self.exits:
+			exitList += i
+		retVal = self.description + " The exits are as follows: " + exitList + ". What do you do?"
+		return retVal
 ## Different types of outdoor rooms. ##
 class Swamp(Outdoors):
-	def __init__(self,internalName,title,description,exits,encountersEnabled,encounterPool):
+	def __init__(self,internalName,title,description,exits,encountersEnabled,encounterPool,shops):
 		self.internalName = internalName
 		self.title = title
 		self.description = description
 		self.exits = exits
 		self.encountersEnabled = True
 		self.encounterPool = encounterPool
+		self.shops = None
+	def describe(self):
+		exitList = ''
+		for i in self.exits:
+			exitList += i
+		retVal = self.description + " The exits are as follows: " + exitList + ". What do you do?"
+		return retVal
 class Plains(Outdoors):
-	def __init__(self,internalName,title,description,exits,encountersEnabled,encounterPool):
+	def __init__(self,internalName,title,description,exits,encountersEnabled,encounterPool,shops):
 		self.internalName = internalName
 		self.title = title
 		self.description = description
 		self.exits = exits
 		self.encountersEnabled = True
 		self.encounterPool = encounterPool
+		self.shops = None
+	def describe(self):
+		exitList = ''
+		for i in self.exits:
+			exitList += i
+		retVal = self.description + " The exits are as follows: " + exitList + ". What do you do?"
+		return retVal
 class Forest(Outdoors):
-	def __init__(self,internalName,title,description,exits,encountersEnabled,encounterPool):
+	def __init__(self,internalName,title,description,exits,encountersEnabled,encounterPool,shops):
 		self.internalName = internalName
 		self.title = title
 		self.description = description
 		self.exits = exits
 		self.encountersEnabled = True
 		self.encounterPool = encounterPool
+		self.shops = None
+	def describe(self):
+		exitList = ''
+		for i in self.exits:
+			exitList += i
+		retVal = self.description + " The exits are as follows: " + exitList + ". What do you do?"
+		return retVal
 class Cave(Outdoors):
-	def __init__(self,internalName,title,description,exits,encountersEnabled,encounterPool):
+	def __init__(self,internalName,title,description,exits,encountersEnabled,encounterPool,shops):
 		self.internalName = internalName
 		self.title = title
 		self.description = description
 		self.exits = exits
 		self.encountersEnabled = True
 		self.encounterPool = encounterPool
+		self.shops = None
+	def describe(self):
+		exitList = ''
+		for i in self.exits:
+			exitList += i
+		retVal = self.description + " The exits are as follows: " + exitList + ". What do you do?"
+		return retVal
 class Desert(Outdoors):
-	def __init__(self,internalName,title,description,exits,encountersEnabled,encounterPool):
+	def __init__(self,internalName,title,description,exits,encountersEnabled,encounterPool,shops):
 		self.internalName = internalName
 		self.title = title
 		self.description = description
 		self.exits = exits
 		self.encountersEnabled = True
 		self.encounterPool = encounterPool
+		self.shops = None
+	def describe(self):
+		exitList = ''
+		for i in self.exits:
+			exitList += i
+		retVal = self.description + " The exits are as follows: " + exitList + ". What do you do?"
+		return retVal
 class Savanna(Outdoors):
-	def __init__(self,internalName,title,description,exits,encountersEnabled,encounterPool):
+	def __init__(self,internalName,title,description,exits,encountersEnabled,encounterPool,shops):
 		self.internalName = internalName
 		self.title = title
 		self.description = description
 		self.exits = exits
 		self.encountersEnabled = True
 		self.encounterPool = encounterPool
+		self.shops = None
+	def describe(self):
+		exitList = ''
+		for i in self.exits:
+			exitList += i
+		retVal = self.description + " The exits are as follows: " + exitList + ". What do you do?"
+		return retVal
 class Snowlands(Outdoors):
-	def __init__(self,internalName,title,description,exits,encountersEnabled,encounterPool):
+	def __init__(self,internalName,title,description,exits,encountersEnabled,encounterPool,shops):
 		self.internalName = internalName
 		self.title = title
 		self.description = description
 		self.exits = exits
 		self.encountersEnabled = True
 		self.encounterPool = encounterPool
+		self.shops = None
+	def describe(self):
+		exitList = ''
+		for i in self.exits:
+			exitList += i
+		retVal = self.description + " The exits are as follows: " + exitList + ". What do you do?"
+		return retVal
 class Jungle(Outdoors):
-	def __init__(self,internalName,title,description,exits,encountersEnabled,encounterPool):
+	def __init__(self,internalName,title,description,exits,encountersEnabled,encounterPool,shops):
 		self.internalName = internalName
 		self.title = title
 		self.description = description
 		self.exits = exits
 		self.encountersEnabled = True
 		self.encounterPool = encounterPool
+		self.shops = None
+	def describe(self):
+		exitList = ''
+		for i in self.exits:
+			exitList += i
+		retVal = self.description + " The exits are as follows: " + exitList + ". What do you do?"
+		return retVal
 #### Title ####
 def title_selections():
 	option = input("> ")
@@ -210,9 +325,13 @@ def help():
 	input("#    Press any key to continue    #")
 	title_screen()
 
+
+
+
 #### Name and stat rolling, as well as map initialization. ####
 def new_game():
 	#### This will cause extremely long load times because python. Too bad! Loading an entire world takes time! ####
+	jedboroughPlaza = CityCell("startCell","Jedborough Plaza","You find yourself in Jedborough, the city of generic adventurer characters. You, however, are slightly less generic due to this self-aware description. Of course the narrative wou- I digress.",["the blacksmith, ", "a nearby forest, ", "[generic scary cave name] cave"],False,None,None)
 	cprint("Adventure is upon us! What is your name, adventurer?", attrs=['underline'])
 	name = input("> ")
 	cprint("Time to create your stats, " + name + "!", attrs=['underline'])
@@ -258,51 +377,30 @@ def new_game():
 				if fuzz.ratio(stat.lower(),"strength") >= 85:
 					strength += int(count)
 					points -= int(count)
-					try:
-						os.system('cls')
-					except:
-						os.system('clear')
+					clear()
 				elif fuzz.ratio(stat.lower(),"defense") >= 85:
 					defense += int(count)
 					points -= int(count)
-					try:
-						os.system('cls')
-					except:
-						os.system('clear')
+					clear()
 				elif fuzz.ratio(stat.lower(),"agility") >= 85:
 					agility += int(count)
 					points -= int(count)
-					try:
-						os.system('cls')
-					except:
-						os.system('clear')
+					clear()
 				elif fuzz.ratio(stat.lower(),"intelligence") >= 85:
 					intelligence += int(count)
 					points -= int(count)
-					try:
-						os.system('cls')
-					except:
-						os.system('clear')
+					clear()
 				elif fuzz.ratio(stat.lower(),"charisma") >= 85:
 					charisma += int(count)
 					points -= int(count)
-					try:
-						os.system('cls')
-					except:
-						os.system('clear')
+					clear()
 				elif fuzz.ratio(stat.lower(),"luck") >= 85:
 					luck += int(count)
 					points -= int(count)
-					try:
-						os.system('cls')
-					except:
-						os.system('clear')
+					clear()
 				else:
 					print("What was that?")
-					try:
-						os.system('cls')
-					except:
-						os.system('clear')
+					clear()
 					continue
 		#Basically identical to the above information about fuzzywuzzy, numbers, etc.
 		elif fuzz.ratio(option.lower(),"remove points") >= 85:
@@ -322,51 +420,30 @@ def new_game():
 				if fuzz.ratio(stat.lower(),"strength") >= 85:
 					strength -= int(count)
 					points += int(count)
-					try:
-						os.system('cls')
-					except:
-						os.system('clear')
+					clear()
 				elif fuzz.ratio(stat.lower(),"defense") >= 85:
 					defense -= int(count)
 					points += int(count)
-					try:
-						os.system('cls')
-					except:
-						os.system('clear')
+					clear()
 				elif fuzz.ratio(stat.lower(),"agility") >= 85:
 					agility -= int(count)
 					points += int(count)
-					try:
-						os.system('cls')
-					except:
-						os.system('clear')
+					clear()
 				elif fuzz.ratio(stat.lower(),"intelligence") >= 85:
 					intelligence -= int(count)
 					points += int(count)
-					try:
-						os.system('cls')
-					except:
-						os.system('clear')
+					clear()
 				elif fuzz.ratio(stat.lower(),"charisma") >= 85:
 					charisma -= int(count)
 					points += int(count)
-					try:
-						os.system('cls')
-					except:
-						os.system('clear')
+					clear()
 				elif fuzz.ratio(stat.lower(),"luck") >= 85:
 					luck -= int(count)
 					points += int(count)
-					try:
-						os.system('cls')
-					except:
-						os.system('clear')
+					clear()
 				else:
 					print("What was that?")
-					try:
-						os.system('cls')
-					except:
-						os.system('clear')
+					clear()
 					continue
 		#Checks if the user is trying to pull a fast one on us. Inelegant, but too bad!
 		elif fuzz.ratio(option.lower(),"continue") >= 85:
@@ -388,6 +465,7 @@ def new_game():
 	hp = maxHP
 	maxMP = int(math.ceil(intelligence/2 + charisma/2)+10)
 	mp = maxMP
+	clear()
 	cprint("Final Stats:", attrs=['underline'])
 	cprint("\u001b[1mHP: " + str(maxHP), "green")
 	cprint("\u001b[1mMP: " + str(maxMP), "cyan")
@@ -398,7 +476,9 @@ def new_game():
 	cprint("CHR: " + str(charisma), "green")
 	cprint("LUK: " + str(luck), "magenta")
 	time.sleep(2)
-	thePlayer = Player(name,maxHP,hp,maxMP,mp,[],strength,defense,agility,intelligence,charisma,luck,)
+	global thePlayer
+	thePlayer = Player(name,maxHP,hp,maxMP,mp,[],strength,defense,agility,intelligence,charisma,luck,jedboroughPlaza)
+	clear()
 	cprint("Here is your description sheet.", attrs=['underline'])
 	time.sleep(2)
 	print("You read the description sheet.")
@@ -407,7 +487,8 @@ def new_game():
 	time.sleep(2)
 	cprint("Now you are ready, " + thePlayer.name + ". Ready to join the war against {generic villain name}!", attrs=["underline"])
 	time.sleep(5)
-	thePlayer.whereAmI
+	cprint(thePlayer.whereami(), "magenta", attrs=['underline'])
+	input("Press any key to continue")
 	main()
 
 def main():
@@ -421,6 +502,7 @@ def main():
 	#### Good Yard, The Programmer.
 	"""
 	while True:
-		pass
+		print(thePlayer.location.describe())
+		thePlayer.location.
 if __name__ == "__main__":
 	title_screen()
