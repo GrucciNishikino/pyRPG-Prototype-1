@@ -70,6 +70,7 @@ Children of the Room Class will vary from high encounters and low shops to low e
 Chests and whatnot will be children of the Event Class.
 Battles will be a seperate class, but the specifics will be attributes of areas.
 """
+#### Shop class. Is subject to change. ####
 class Shop:
 	def __init__(self,shopkeepText,items,prices,buyType):
 		self.shopkeepText = ["Welcome to my shop! Buy or sell?","What would you like to buy?","What would you like to sell?"]
@@ -101,7 +102,7 @@ class Shop:
 		cprint(self.shopkeepText[2], "cyan", attrs=['underline'])
 		pass
 class Room:
-	def __init__(self,internalName,title,description,exits,encountersEnabled,encounterPool,shops):
+	def __init__(self,internalName,title,description,exits,encountersEnabled,encounterPool,shops,choice,tokens,targets):
 		self.internalName = internalName
 		self.title = title
 		self.description = description
@@ -109,166 +110,97 @@ class Room:
 		self.encountersEnabled = encountersEnabled
 		self.encounterPool = encounterPool
 		self.shops = shops
+		self.choice = choice
+		#This will cause pain very shortly. More on that a few lines down.
+		self.tokens = ["above","across","after","against","ahead of","at","away","before","behind","below","beneath","beside","between","from","off","on","onto","out","over","to","toward","towards","under","underneath","look","use","open","lock","close","unlock","attack","fight","talk","go","exit","enter","menu","quicksave","quickload"]
+		self.targets = targets
 	def describe(self):
 		exitList = ''
 		for i in self.exits:
 			exitList += i
 		retVal = self.description + " The exits are as follows: " + exitList + ". What do you do?"
 		return retVal
+		#Prototype 2 will not use this terribleness. The idea here is a """smart"""
+	def obey(self,choice):
+		
 #### Children of Room Class inbound! ####
 ## A room in a city ##
 class CityCell(Room):
-	def __init__(self,internalName,title,description,exits,encountersEnabled,encounterPool,shops):
-		self.internalName = internalName
-		self.title = title
-		self.description = description
-		self.exits = exits
+	def __init__(self,internalName,title,description,exits,encountersEnabled,encounterPool,shops,choice,tokens,targets):
+		super()
 		self.encountersEnabled = False
 		self.encounterPool = None
-		self.shops = shops
 	def describe(self):
-		exitList = ''
-		for i in self.exits:
-			exitList += i
-		retVal = self.description + " The exits are as follows: " + exitList + ". What do you do?"
-		return retVal
+		return super().describe()
+	def obey(self,choice):
+		return super().obey()
 ### Generic outdoor parent class. ###
 class Outdoors(Room):
-	def __init__(self,internalName,title,description,exits,encountersEnabled,encounterPool,shops):
-		self.internalName = internalName
-		self.title = title
-		self.description = description
-		self.exits = exits
+	def __init__(self,internalName,title,description,exits,encountersEnabled,encounterPool,shops,choice,tokens,targets):
+		super()
 		self.encountersEnabled = True
-		self.encounterPool = encounterPool
-		self.shops = shops
+		self.shops = False
 	def describe(self):
-		exitList = ''
-		for i in self.exits:
-			exitList += i
-		retVal = self.description + " The exits are as follows: " + exitList + ". What do you do?"
-		return retVal
+		return super().describe()
+	def obey(self,choice):
+		return super().obey()
 ## Different types of outdoor rooms. ##
 class Swamp(Outdoors):
-	def __init__(self,internalName,title,description,exits,encountersEnabled,encounterPool,shops):
-		self.internalName = internalName
-		self.title = title
-		self.description = description
-		self.exits = exits
-		self.encountersEnabled = True
-		self.encounterPool = encounterPool
-		self.shops = None
+	def __init__(self,internalName,title,description,exits,encountersEnabled,encounterPool,shops,choice,tokens,targets):
+		super()
 	def describe(self):
-		exitList = ''
-		for i in self.exits:
-			exitList += i
-		retVal = self.description + " The exits are as follows: " + exitList + ". What do you do?"
-		return retVal
+		return super().describe()
+	def obey(self,choice):
+		return super().obey()
 class Plains(Outdoors):
-	def __init__(self,internalName,title,description,exits,encountersEnabled,encounterPool,shops):
-		self.internalName = internalName
-		self.title = title
-		self.description = description
-		self.exits = exits
-		self.encountersEnabled = True
-		self.encounterPool = encounterPool
-		self.shops = None
+	def __init__(self,internalName,title,description,exits,encountersEnabled,encounterPool,shops,choice,tokens,targets):
+		super()
 	def describe(self):
-		exitList = ''
-		for i in self.exits:
-			exitList += i
-		retVal = self.description + " The exits are as follows: " + exitList + ". What do you do?"
-		return retVal
+		return super().describe()
+	def obey(self,choice):
+		return super().obey()
 class Forest(Outdoors):
-	def __init__(self,internalName,title,description,exits,encountersEnabled,encounterPool,shops):
-		self.internalName = internalName
-		self.title = title
-		self.description = description
-		self.exits = exits
-		self.encountersEnabled = True
-		self.encounterPool = encounterPool
-		self.shops = None
+	def __init__(self,internalName,title,description,exits,encountersEnabled,encounterPool,shops,choice,tokens,targets):
+		super()
 	def describe(self):
-		exitList = ''
-		for i in self.exits:
-			exitList += i
-		retVal = self.description + " The exits are as follows: " + exitList + ". What do you do?"
-		return retVal
+		return super().describe()
+	def obey(self,choice):
+		return super().obey()
 class Cave(Outdoors):
-	def __init__(self,internalName,title,description,exits,encountersEnabled,encounterPool,shops):
-		self.internalName = internalName
-		self.title = title
-		self.description = description
-		self.exits = exits
-		self.encountersEnabled = True
-		self.encounterPool = encounterPool
-		self.shops = None
+	def __init__(self,internalName,title,description,exits,encountersEnabled,encounterPool,shops,choice,tokens,targets):
+		super()
 	def describe(self):
-		exitList = ''
-		for i in self.exits:
-			exitList += i
-		retVal = self.description + " The exits are as follows: " + exitList + ". What do you do?"
-		return retVal
+		return super().describe()
+	def obey(self,choice):
+		return super().obey()
 class Desert(Outdoors):
-	def __init__(self,internalName,title,description,exits,encountersEnabled,encounterPool,shops):
-		self.internalName = internalName
-		self.title = title
-		self.description = description
-		self.exits = exits
-		self.encountersEnabled = True
-		self.encounterPool = encounterPool
-		self.shops = None
+	def __init__(self,internalName,title,description,exits,encountersEnabled,encounterPool,shops,choice,tokens,targets):
+		super()
 	def describe(self):
-		exitList = ''
-		for i in self.exits:
-			exitList += i
-		retVal = self.description + " The exits are as follows: " + exitList + ". What do you do?"
-		return retVal
+		return super().describe()
+	def obey(self,choice):
+		return super().obey()
 class Savanna(Outdoors):
-	def __init__(self,internalName,title,description,exits,encountersEnabled,encounterPool,shops):
-		self.internalName = internalName
-		self.title = title
-		self.description = description
-		self.exits = exits
-		self.encountersEnabled = True
-		self.encounterPool = encounterPool
-		self.shops = None
+	def __init__(self,internalName,title,description,exits,encountersEnabled,encounterPool,shops,choice,tokens,targets):
+		super()
 	def describe(self):
-		exitList = ''
-		for i in self.exits:
-			exitList += i
-		retVal = self.description + " The exits are as follows: " + exitList + ". What do you do?"
-		return retVal
+		return super().describe()
+	def obey(self,choice):
+		return super().obey()
 class Snowlands(Outdoors):
-	def __init__(self,internalName,title,description,exits,encountersEnabled,encounterPool,shops):
-		self.internalName = internalName
-		self.title = title
-		self.description = description
-		self.exits = exits
-		self.encountersEnabled = True
-		self.encounterPool = encounterPool
-		self.shops = None
+	def __init__(self,internalName,title,description,exits,encountersEnabled,encounterPool,shops,choice,tokens,targets):
+		super()
 	def describe(self):
-		exitList = ''
-		for i in self.exits:
-			exitList += i
-		retVal = self.description + " The exits are as follows: " + exitList + ". What do you do?"
-		return retVal
+		return super().describe()
+	def obey(self,choice):
+		return super().obey()
 class Jungle(Outdoors):
-	def __init__(self,internalName,title,description,exits,encountersEnabled,encounterPool,shops):
-		self.internalName = internalName
-		self.title = title
-		self.description = description
-		self.exits = exits
-		self.encountersEnabled = True
-		self.encounterPool = encounterPool
-		self.shops = None
+	def __init__(self,internalName,title,description,exits,encountersEnabled,encounterPool,shops,choice,tokens,targets):
+		super()
 	def describe(self):
-		exitList = ''
-		for i in self.exits:
-			exitList += i
-		retVal = self.description + " The exits are as follows: " + exitList + ". What do you do?"
-		return retVal
+		return super().describe()
+	def obey(self,choice):
+		return super().obey()
 #### Title ####
 def title_selections():
 	option = input("> ")
@@ -478,7 +410,6 @@ def new_game():
 	time.sleep(2)
 	global thePlayer
 	thePlayer = Player(name,maxHP,hp,maxMP,mp,[],strength,defense,agility,intelligence,charisma,luck,jedboroughPlaza)
-	clear()
 	cprint("Here is your description sheet.", attrs=['underline'])
 	time.sleep(2)
 	print("You read the description sheet.")
@@ -487,7 +418,7 @@ def new_game():
 	time.sleep(2)
 	cprint("Now you are ready, " + thePlayer.name + ". Ready to join the war against {generic villain name}!", attrs=["underline"])
 	time.sleep(5)
-	cprint(thePlayer.whereami(), "magenta", attrs=['underline'])
+#Debug	cprint(thePlayer.whereami(), "magenta", attrs=['underline'])
 	input("Press any key to continue")
 	main()
 
@@ -503,6 +434,7 @@ def main():
 	"""
 	while True:
 		print(thePlayer.location.describe())
-		thePlayer.location.
+		option = input("> ")
+		thePlayer.location.obey(option)
 if __name__ == "__main__":
 	title_screen()
