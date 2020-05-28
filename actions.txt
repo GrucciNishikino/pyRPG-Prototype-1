@@ -1,0 +1,53 @@
+#
+#Attack someone/something
+attack
+fight
+kill
+#
+#Close something, i.e a door
+close
+shut
+#
+#Open something, i.e a door
+open
+#
+#Remove an item from your inventory
+drop
+put
+throw
+#
+#Add an item to your inventory
+get
+grab
+take
+#
+#Drink a potion or beverage.
+drink
+#
+#Eat food or other edible thing.
+eat
+#
+#Change rooms.
+enter
+exit
+go
+move
+travel
+#
+#Look at something.
+examine
+inspect
+look
+#
+#Push something out of the way.
+push
+#
+#General use command
+use
+#
+#Special commands that are exceptions in the parser.
+menu
+quickload
+quicksave
+status
+die

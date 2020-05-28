@@ -1,0 +1,9 @@
+internalName		"[x,y,z]"
+name			"AREA_NAME"
+description		"DESCRIPTION"
+exits			[object1,object2]
+encountersEnabled	True
+encounterPool		"sewers"
+shops			[object1,object2]
+objects			[object1,object2]
+secretExits		{object1: False, object2: True}
