@@ -343,6 +343,7 @@ class Room:
 						cprint("DEBUG: secretExits List " + str(self.secretExits),"magenta")
 						input("Press enter to scream internally about this crap.")
 				except IndexError:
+					pass
 #### Children of Room Class inbound! ####
 ## A room in a city ##
 class CityCell(Room):
