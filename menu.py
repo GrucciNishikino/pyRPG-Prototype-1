@@ -1,7 +1,7 @@
 from fuzzywuzzy import fuzz
 from termcolor import cprint, colored
 
-from utils import clear
+import utils
 
 class Menu:
 	"""
@@ -21,21 +21,28 @@ class Menu:
 	** Options will ignore casing **
 
 	"""
-	def __init__(self, options, title = "Pick an option:", titleColor = "cyan"):
-		self.options = options
+	def __init__(self, options, title = "Pick an option:", titleColor: str = "cyan", description = None):
+		if options == None:
+			cprint("Menu %s has none options!" % (title), "red");
+		self.__options = options
 		self.title = title
-		self.titleColor = titleColor
+		self.titleColor = titleColor.lower()
+		self.description = description
 
-	def prompt(self, arg = None):
-		clear()
+	def prompt(self, arg = None) -> (object, bool):
+		utils.clear()
 		cprint(self.title, self.titleColor)
-		for o in self.options:
+
+		if self.description != None:
+			print("\n%s\n" % (self.description))
+
+		for o in self.__options:
 			print(" > %s" % (o))
 		selection = input("> ")
 		t = None
-		for o in self.options:
-			if fuzz.ratio(selection, o) >= 75:
-				t = self.options[o](arg)
+		for o in self.__options:
+			if fuzz.ratio(selection.lower(), o.lower()) >= 75:
+				t = self.__options[o](arg)
 				break
 		if t != None and t[1]:
 			return t[0]

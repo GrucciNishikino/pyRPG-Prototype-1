@@ -7,10 +7,11 @@ from fuzzywuzzy import fuzz, process
 from termcolor import cprint
 import jsonpickle
 
-# Code imports
-from player import Player
+# *.py file imports
+import player
 from menus import getMenus
-from utils import *
+from rooms import Room, getRooms
+from utils import clear
 
 # title screen
 
@@ -43,6 +44,7 @@ def title_screen():
 
 
 def main():
+	clear()
 	title_screen()
 	return
 
@@ -55,18 +57,38 @@ def load():
 	play()
 	return True
 
+# This is the best help message i could think of dont bully me
 def help():
-	cprint("Select an option from the list...", "green")
+	cprint("Select an option from the list!", "green")
 	return False
 
+# Start the game
 def play():
-	player = Player(input("What is your name?\n> "), 5, 5, 5, 5, 5, 5, 5, 5)
-	print("So the adventure begins... %s" % (player.name))
+	thePlayer = player.Player(input("What is your name?\n> "), 5, 5, 5, 5, 5, 5, 5, 5)
+	print("So the adventure begins... %s\nAgainst the evil {generic_villan_name}!" % (thePlayer.name))
 	time.sleep(1)
-	player = getMenus()["player_init"].prompt(player)
+	thePlayer = getMenus()["player_init"].prompt(thePlayer)
+
+	"""
+	NONE -> Nothing special is happening
+	"""
+	gameState = "NONE"
+
+	# Define all rooms
+	map = [
+		[getRooms()["main_room"],  getRooms()["debug_room"]],
+		[getRooms()["debug_room"], getRooms()["debug_room"]]
+	]
+	mapSize = (len(map[0]), len(map))
+	while gameState != "END":
+		r = map[thePlayer.coords[0]][thePlayer.coords[1]]
+		t = r.getMenu().prompt((thePlayer, map, gameState))
+		thePlayer = t[0]
+		gameState = t[1]
+
 	return True
 
 
-# call main
+# call main because you kinda have to
 if __name__ == "__main__":
 	main()

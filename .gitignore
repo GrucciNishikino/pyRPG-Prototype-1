@@ -1,2 +1,3 @@
 .editorconfig
 /.vs
+/__pycache__
