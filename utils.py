@@ -11,3 +11,7 @@ def getNumber(prompt = "Enter a number:"):
 	except:
 		cprint("Invalid number!", "red")
 		return getNumber(prompt)
+
+# returns "n" if n is negative, and "+n" if n is positive
+def prefixNumber(n):
+	return ("+" if n > 0 else "") + str(n)

@@ -36,8 +36,9 @@ def title_screen():
 			else:
 				break
 	cprint("Invalid option!", "red")
-	input()
+	time.sleep(1)
 	title_screen()
+	return
 
 
 
@@ -61,7 +62,7 @@ def help():
 def play():
 	player = Player(input("What is your name?\n> "), 5, 5, 5, 5, 5, 5, 5, 5)
 	print("So the adventure begins... %s" % (player.name))
-	input()
+	time.sleep(1)
 	player = getMenus()["player_init"].prompt(player)
 	return True
 

@@ -1,11 +1,14 @@
 from termcolor import cprint
 
+from utils import prefixNumber
+from effects import *
+
 class Player:
 	def __init__(self, name, maxHP, maxMP, strength, defense, agility, intelligence, charisma, luck):
 		self.name = name
 		self.maxHP = maxHP
-		self.health = maxHP
 		self.maxMP = maxMP
+		self.health = maxHP
 		self.mana = maxMP
 		self.stat_effects = []
 		self.strength = strength
@@ -23,10 +26,17 @@ class Player:
 		if resetPoints:
 			self.points = 0
 	def showStats(self):
-		cprint("Health: %d" % (self.health), "red")
-		cprint("Mana: %d" % (self.mana), "cyan")
-		cprint("Defense: %d" % (self.strength), "blue")
-		cprint("Agility: %d" % (self.strength), "yellow")
-		cprint("Intelligence: %d" % (self.strength), "cyan")
-		cprint("Charisma: %d" % (self.strength), "green")
-		cprint("Luck: %d" % (self.strength), "magenta")
+		print("\nStatistics for: %s\n" % (self.name))
+		cprint("Health: %d" % (self.health + sum(map(lambda s: s.health, self.stat_effects))), "red")
+		cprint("Mana: %d" % (self.mana + sum(map(lambda s: s.mana, self.stat_effects))), "cyan")
+		cprint("Defense: %d" % (self.defense + sum(map(lambda s: s.defense, self.stat_effects))), "blue")
+		cprint("Agility: %d" % (self.agility + sum(map(lambda s: s.agility, self.stat_effects))), "yellow")
+		cprint("Intelligence: %d" % (self.intelligence + sum(map(lambda s: s.intelligence, self.stat_effects))), "cyan")
+		cprint("Charisma: %d" % (self.charisma + sum(map(lambda s: s.charisma, self.stat_effects))), "green")
+		cprint("Luck: %d" % (self.luck + sum(map(lambda s: s.luck, self.stat_effects))), "magenta")
+		print("Points: %d" % (self.points))
+		if len(self.stat_effects) > 0:
+			print("\nStatus effects:")
+			for s in self.stat_effects:
+				cprint("%s: (%s HP %s MP %s STR %s DEF %s AGI %s INT %s CHR %s LUK)" % (s.name, prefixNumber(s.health), prefixNumber(s.mana), prefixNumber(s.strength), prefixNumber(s.defense), prefixNumber(s.agility), prefixNumber(s.intelligence), prefixNumber(s.charisma), prefixNumber(s.luck)), s.color)
+			print("\n")

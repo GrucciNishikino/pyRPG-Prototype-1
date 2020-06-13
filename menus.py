@@ -6,12 +6,17 @@ from utils import *
 def getMenus():
 	return {
 		"player_init": Menu({
-			"add points": lambda arg: player_init_addPoints(arg),
-			"continue": lambda arg: player_init_continue(arg)
+			"Add Points": lambda arg: player_init_addPoints(arg),
+			"Continue": lambda arg: player_init_continue(arg),
+			"Show Stats": lambda arg: player_init_showStats(arg)
 		})
 	}
 
 # player_init menu
+
+def player_init_showStats(arg):
+	arg.showStats()
+	input("Press enter to exit...")
 
 def player_init_continue(arg):
 	cprint("Good luck, fellow adverturer!", "green")
@@ -20,7 +25,6 @@ def player_init_continue(arg):
 def player_init_addPoints(player):
 	clear()
 	player.showStats()
-	print("You have: %d points left" % (player.points))
 	count = getNumber("How many points do you want to add?")
 	if count > player.points or count < 0:
 		cprint("You dont have enough points!", "red")

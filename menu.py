@@ -5,17 +5,21 @@ from utils import clear
 
 class Menu:
 	"""
+	
 	Example options:
-	{
-		"Test1": lambda: func1(),
-		"Test2": lambda: func2(),
+	options = {
+		"Test1": lambda arg: func1(arg),
+		"Test2": lambda arg: func2(arg),
 	}
 	Functions MUST return a tuple where the second value is a bool
+	
 	Second value action:
+
 	True -> Exit menu
 	False -> return to menu after function finishes, useful for "Help" options
 
 	** Options will ignore casing **
+
 	"""
 	def __init__(self, options, title = "Pick an option:", titleColor = "cyan"):
 		self.options = options
