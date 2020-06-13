@@ -81,7 +81,10 @@ def play():
 	]
 	mapSize = (len(map[0]), len(map))
 	while gameState != "END":
-		r = map[thePlayer.coords[0]][thePlayer.coords[1]]
+		r: Room = map[thePlayer.coords[0]][thePlayer.coords[1]]
+		if str(r.name).lower() == "debug room":
+			r.description = str(r.description).replace("%NAME%", thePlayer.name)
+		map[thePlayer.coords[0]][thePlayer.coords[1]] = r
 		t = r.getMenu().prompt((thePlayer, map, gameState))
 		thePlayer = t[0]
 		gameState = t[1]

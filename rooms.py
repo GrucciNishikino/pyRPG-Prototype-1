@@ -7,7 +7,7 @@ import utils
 def getRooms() -> dict:
 	return {
 		"main_room": Room({}, "Jedborough", "green", "You find yourself in Jedborough, the city of generic adventurer characters. You, however, are slightly less generic due to this self-aware description. Of course the narrative wou- I digress.", exits = (True, True, True, True)),
-		"debug_room": Room({}, "Debug Room", "red", "You should not be here... NOW SCRAM!", exits = (True, True, True, True))
+		"debug_room": Room({}, "Debug Room", "red", "Cleverly done, %NAME%, but you're not supposed to be here. As a matter of fact, you're not. Get back where you belong and forget about all this. Until we meet... again.", exits = (True, True, True, True))
 	}
 
 class Room:
@@ -21,9 +21,9 @@ class Room:
 	"""
 	def __init__(self, options, name, color, description, exits = (False, False, False, False)):
 		self.__options = options
-		self.__name = name
+		self.name = name
 		self.__color = color
-		self.__description = description
+		self.description = description
 		self.exits: (bool, bool, bool, bool) = exits # Up, Down, Left, Right
 		return
 	def openExits(self, sideNos: list):
@@ -36,9 +36,9 @@ class Room:
 		return menu.Menu(utils.combine({
 			"Exit": lambda arg: self.__exit(arg),
 			"Map": lambda arg: self.__map(arg)
-		}, self.__options), title = self.__name, titleColor = self.__color, description = self.__description)
+		}, self.__options), title = self.name, titleColor = self.__color, description = self.description)
 	def describe(self):
-		cprint(self.__description, self.__color)
+		cprint(self.description, self.__color)
 	# Default room options
 	def __exit(self, arg):
 		p = arg[0]
