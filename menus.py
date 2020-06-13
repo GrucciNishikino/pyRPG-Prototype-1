@@ -29,7 +29,7 @@ def player_init_addPoints(player) -> (object, bool):
 	utils.clear()
 	player.showStats()
 	print("You have: %d points left" % (player.points));
-	count = getNumber("How many points do you want to add? (Enter 0 to exit)")
+	count = utils.getNumber("How many points do you want to add? (Enter 0 to exit)")
 	if count > player.points or count < 0:
 		cprint("You dont have enough points or you entered an invalid number!", "red")
 		player_init_addPoints(player)
